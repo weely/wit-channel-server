@@ -10,7 +10,7 @@ userRouter.get('/user', async (ctx, next) => {
   try {
     const { id } = ctx.query
     if (!id) {
-      res = fail({}, '参数 id 为空', CODE.PARAM_ERROR)
+      ctx.body = fail({}, '参数 id 为空', CODE.PARAM_ERROR)
     }
 
     const data = await userController.find(ctx.query.id)
@@ -18,8 +18,8 @@ userRouter.get('/user', async (ctx, next) => {
     ctx.body = success(data)
   } catch (err) {
     console.log('-------', err)
+    ctx.body = fail(err)
   }
-  ctx.body = fail(err)
   await next()
 })
 
