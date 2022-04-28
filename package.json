@@ -3,13 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "serve": "node ./src/server.js",
+    "initDb": "node ./src/initData.js",
+    "start": "node ./src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "weely.cc",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^3.28.0"
-  },
-  "type": "module"
+    "keygrip": "^1.1.0",
+    "koa": "^2.13.4",
+    "koa-router": "^10.1.1",
+    "log4js": "^6.4.6",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.19.0"
+  }
 }
