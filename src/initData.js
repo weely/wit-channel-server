@@ -1,9 +1,13 @@
-const User =require('./models/users.js');
+const User =require('./models/users.js')
+const { generateSalt, encryptionPwd } = require('./utils/auth')
 
-User.sync({ force: false }).then(()=>{
+User.sync({ force: true }).then(()=>{
+  const salt = generateSalt()
   return User.create({
+    loginname: 'xiaoming',
     username: '小明',
-    password: 'e10adc3949ba59abbe56e057f20f883e'
+    passsalt: salt,
+    password: encryptionPwd('123456', salt)
   })
 }).catch((err) => {
   console.error(err)

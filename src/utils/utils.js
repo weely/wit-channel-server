@@ -9,6 +9,9 @@ const CODE = {
   AUTH_ERROR: 50001,          // 认证失败或TOKEN过期
 }
 
+const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
+const DIGITALS = '0123456789'
+
 module.exports = {
   // 成功回调
   success(data = {}, msg = 'success', code = CODE.SUCCESS) {
@@ -22,5 +25,7 @@ module.exports = {
 
     return { code, data, msg }
   },
-  CODE
+  CODE,
+  ALPHABET,
+  DIGITALS
 }

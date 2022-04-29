@@ -12,13 +12,31 @@ User.init({
     autoIncrement: true,
     unique: true
   },
+  loginname: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      is: /^[0-9a-z-#_]{2,16}$/i,
+      notNull: {
+        msg: '请输入登录名'
+      }
+    },
+    unique: true
+  },
   username: {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
       notNull: {
-        msg: '请输入你的名字'
+        msg: '请输入用户名'
       }
+    }
+  },
+  passsalt: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      len: 32
     }
   },
   password: {
@@ -35,6 +53,12 @@ User.init({
     allowNull: false,
     defaultValue: 0
   },
+  // 账户状态： 0: 正常，4：删除
+  status: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0
+  }
 }, {
   // 这是其他模型参数
   sequelize, // 我们需要传递连接实例

@@ -14,7 +14,12 @@ const config = {
   wxConfig:{
     APPID:'',
     AppSecret:''
-  }
+  },
+
+  secret: 'wit-channel-secret',
+  expiresIn: 7 * 24 * 60 * 60,   // 1 周
+
+  defaultPwd: '123456'
 }
 
 module.exports = config
