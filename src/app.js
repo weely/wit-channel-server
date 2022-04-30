@@ -10,7 +10,7 @@ const app = new Koa()
 // 添加 post 参数解析
 app.use(bodyParser())
 // 添加 jwt
-const routeingWhiteList = [/^\/public/, /^\/auth\/(login|register)/]
+const routeingWhiteList = ['/', /^\/public/, /^\/auth\/(login|register)/]
 
 app.use(async (ctx, next) => {
   try {

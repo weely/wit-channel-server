@@ -1,16 +1,23 @@
 // routers
 const Router = require("koa-router")
 const { success, fail, CODE } = require('../utils/utils')
+const { isFunction, isPromise } = require('../utils/app')
 const userController = require('../controllers/UserController')
 
 const router = new Router()
 
-function middleFunc(controllerFunc) {
+function middleFunc(cfn) {
   return async(ctx, next) => {
     let data;
     ctx.logger.info(ctx.originalUrl)
     try {
-      data = await controllerFunc(ctx)
+      if (isPromise(cfn)) {
+        data = await  cfn(ctx)
+      } else if (isFunction(cfn)) {
+        data = cfn(ctx)
+      } else {
+        data = cfn
+      }
     } catch(err) {
       console.log('------ERROR------/r/n', err, '------ERROR END------/r/n')
       ctx.logger.error(JSON.stringify(err))
