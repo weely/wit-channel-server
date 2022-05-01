@@ -1,6 +1,7 @@
 const User =require('./models/users')
 const Order =require('./models/orders')
 const { generateSalt, encryptionPwd } = require('./utils/auth')
+const { generateOrderId } = require('./utils/app')
 
 User.sync({ force: true }).then(()=>{
   const salt = generateSalt()
@@ -16,7 +17,7 @@ User.sync({ force: true }).then(()=>{
 
 Order.sync({ force: true }).then(()=>{
   return Order.create({
-    id: 'O0000001',
+    id: generateOrderId(),
     product_id: 1,
     client_id: '1',
     cost: 100,

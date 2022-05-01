@@ -1,8 +1,9 @@
 // routers
 const Router = require("koa-router")
 const { success, fail, CODE } = require('../utils/utils')
-const { isFunction, isPromise } = require('../utils/app')
+const { isFunction, isPromise, isAsyncFunction } = require('../utils/app')
 const userController = require('../controllers/UserController')
+const orderController = require('../controllers/OrderController')
 
 const router = new Router()
 
@@ -11,7 +12,7 @@ function middleFunc(cfn) {
     let data;
     ctx.logger.info(ctx.originalUrl)
     try {
-      if (isPromise(cfn)) {
+      if (isAsyncFunction(cfn) || isPromise(cfn)) {
         data = await  cfn(ctx)
       } else if (isFunction(cfn)) {
         data = cfn(ctx)
@@ -42,5 +43,12 @@ router.get('/', middleFunc(success('首页')))
   .put('/users/:id',          middleFunc(userController.update))
   .put('/users/resetPwd',     middleFunc(userController.resetPwd))
   .delete('/users/:id',       middleFunc(userController.delete))
+
+  // 订单
+  .post('/orders',       middleFunc(orderController.add))
+  .get('/orders',              middleFunc(orderController.findAll))
+  .get('/orders/:id',          middleFunc(orderController.find))
+  .put('/orders/:id',          middleFunc(orderController.update))
+  .post('/orders/',       middleFunc(orderController.delete))
 
 module.exports = router

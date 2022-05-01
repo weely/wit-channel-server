@@ -26,13 +26,13 @@ Order.init({
       min: 0
     }
   },
-  amount: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    validate: {
-      min: 0
-    }
-  },
+  // amount: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: false,
+  //   validate: {
+  //     min: 0
+  //   }
+  // },
   // 订单状态： 0: 待支付，1。已支付，2。已成交、3.已取消，4.已退单
   status: {
     type: DataTypes.TINYINT,
