@@ -49,13 +49,13 @@ User.init({
   },
   // 账户类型： 0: 普通用户，1：管理员
   account_type: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.TINYINT,
     allowNull: false,
     defaultValue: 0
   },
   // 账户状态： 0: 正常，4：删除
   status: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.TINYINT,
     allowNull: false,
     defaultValue: 0
   }

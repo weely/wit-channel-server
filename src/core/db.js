@@ -19,7 +19,11 @@ const sequelize = new Sequelize({
     dialectOptions: {
       collate: 'utf8_general_ci'
     }
-  }
+  },
+  dialectOptions: {
+    useUTC: false //for reading from database
+  },
+  timezone: '+08:00'
 })
 
 async function testConnection(){

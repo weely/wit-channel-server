@@ -30,17 +30,17 @@ function middleFunc(cfn) {
   }
 }
 
+// restful api
 router.get('/', middleFunc(success('首页')))
   // 授权
   .post('/auth/login',       middleFunc(userController.login))
   .post('/auth/register',    middleFunc(userController.register))
-  .put('/auth/resetPwd',     middleFunc(userController.resetPwd))
 
   // 用户
   .get('/users',              middleFunc(userController.findAll))
   .get('/users/:id',          middleFunc(userController.find))
   .put('/users/:id',          middleFunc(userController.update))
-  // .put('/users/resetPwd',     middleFunc(userController.resetPwd))
+  .put('/users/resetPwd',     middleFunc(userController.resetPwd))
   .delete('/users/:id',       middleFunc(userController.delete))
 
 module.exports = router

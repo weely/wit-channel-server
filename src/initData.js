@@ -1,4 +1,5 @@
-const User =require('./models/users.js')
+const User =require('./models/users')
+const Order =require('./models/orders')
 const { generateSalt, encryptionPwd } = require('./utils/auth')
 
 User.sync({ force: true }).then(()=>{
@@ -13,3 +14,16 @@ User.sync({ force: true }).then(()=>{
   console.error(err)
 })
 
+Order.sync({ force: true }).then(()=>{
+  return Order.create({
+    id: 'O0000001',
+    product_id: 1,
+    client_id: '1',
+    cost: 100,
+    amount: 1,
+    status: 0,
+    remark: '测试'
+  })
+}).catch((err) => {
+  console.error(err)
+})
