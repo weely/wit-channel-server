@@ -5,20 +5,6 @@ const { generateOrderId } = require('../utils/app')
 
 class OrderController {
 
-  static async createOrderId () {
-    let orderId = generateOrderId()
-
-    const order = await Order.findOne({
-      where: {
-        id: orderId
-      }
-    })
-    if (!order) {
-      return orderId
-    }
-    return await createOrderId()
-  }
-
   static async add(ctx) {
     const { product_id, client_id, cost, remark = '' } = ctx.request.body
 
@@ -92,20 +78,19 @@ class OrderController {
     return success(data)
   }
 
-  static async trade (ctx) {
+  static async update(ctx) {
     const { id } = ctx.params
-    const { status } = ctx.request.body
-    const allowStatus = [0,1,2,3,4]
+    const { Ordername, account_type } = ctx.request.body
 
     if (!id) {
       return fail(null, "参数 id 为空", CODE.PARAM_ERROR)
     }
-    if (!allowStatus.includes(+status)) {
-      return fail(null, "订单交易失败", CODE.PARAM_ERROR)
-    }
     const updateParams = { }
-    if (status !== undefined) {
-      updateParams.status = +status
+    if (Ordername !== undefined) {
+      updateParams.Ordername = Ordername
+    }
+    if (account_type !== undefined ) {
+      updateParams.account_type = account_type
     }
 
     await Order.update(updateParams, {
@@ -117,22 +102,22 @@ class OrderController {
     return success({ id })
   }
 
-  // static async delete(ctx) {
-  //   const { id } = ctx.params
-  //   if (!id) {
-  //     return fail(null, "参数 id 为空", CODE.PARAM_ERROR)
-  //   }
-  //   // await Order.destroy
-  //   await Order.update({
-  //     status: 4
-  //   },{
-  //     where: {
-  //       id
-  //     }
-  //   })
+  static async delete(ctx) {
+    const { id } = ctx.params
+    if (!id) {
+      return fail(null, "参数 id 为空", CODE.PARAM_ERROR)
+    }
+    // await Order.destroy
+    await Order.update({
+      status: 4
+    },{
+      where: {
+        id
+      }
+    })
 
-  //   return success({})
-  // }
+    return success({})
+  }
 }
 
 module.exports = OrderController
