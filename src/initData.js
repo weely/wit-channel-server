@@ -31,12 +31,13 @@ const { generateOrderId } = require('./utils/app')
 //   console.error(err)
 // })
 
+// const createdAt = new Date().getTime()
 // TradeRecord.sync({ force: true }).then(()=>{
 //   return TradeRecord.create({
 //     order_id: 1,
 //     client_id: '1',
 //     cost: 100,
-//     createdAt: 0
+//     createdAt: createdAt
 //   })
 // }).catch((err) => {
 //   console.error(err)
