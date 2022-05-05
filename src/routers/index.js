@@ -11,7 +11,9 @@ const router = new Router()
 function middleFunc(cfn) {
   return async(ctx, next) => {
     let data;
-    ctx.logger.info(ctx.originalUrl)
+    const request = JSON.parse(JSON.stringify(ctx.request))
+    request.body = { ...ctx.request.body }
+    ctx.logger.info(JSON.stringify(request))
     try {
       if (isAsyncFunction(cfn) || isPromise(cfn)) {
         data = await  cfn(ctx)
@@ -55,6 +57,5 @@ router.get('/', middleFunc(success('首页')))
   // 交易记录
   .post('/trade_records',       middleFunc(tradeRecordController.add))
   .get('/trade_records',              middleFunc(tradeRecordController.findAll))
-  .get('/trade_records/:id',          middleFunc(tradeRecordController.find))
 
 module.exports = router

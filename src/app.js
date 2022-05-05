@@ -7,11 +7,9 @@ const { secret } = require('./config/default')
 
 const app = new Koa()
 // app.keys = ['im a newer secret', 'i like turtle']
-// 添加 post 参数解析
-app.use(bodyParser())
+
 // 添加 jwt
 const routeingWhiteList = ['/', /^\/public/, /^\/auth\/(login|register)/]
-
 app.use(async (ctx, next) => {
   try {
     // 添加日志工具
@@ -27,7 +25,8 @@ app.use(async (ctx, next) => {
 app.use(jwt({
   secret: secret, cookie: 'token'
 }).unless({ path: routeingWhiteList }))
-
+// 添加 post 参数解析
+app.use(bodyParser())
 // 添加路由
 app.use(router.routes(), router.allowedMethods())
 

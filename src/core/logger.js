@@ -16,13 +16,17 @@ log4js.configure({
     },
     info: {
       type: 'file',
-      filename: 'logs/info.log'
+      filename: 'logs/info.log',
     },
     error: {
       type: 'dateFile',
       filename: "logs/error",
       pattern: 'yyyy-MM-dd.log',
-      alwaysIncludePattern: true 
+      alwaysIncludePattern: true
+      // layout: {
+      //   type: 'pattern',
+      //   pattern: '%[[%d] [%p] [%f{2}:%l] %m'
+      // }
     }
   },
   categories: {
@@ -37,6 +41,7 @@ log4js.configure({
     error: {
       appenders: [ 'error', 'console'],
       level: 'error'
+      // enableCallStack: true
     }
   }
 });

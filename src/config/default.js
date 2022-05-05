@@ -8,8 +8,8 @@ const config = {
     PORT: '3306',
     DATABASE: 'wit_channel_db',
     USERNAME: 'root',
-    // PASSWORD: 'lw123456',
-    PASSWORD: 'weely@123',
+    PASSWORD: 'lw123456',
+    // PASSWORD: 'weely@123',
   },
   // jwt 配置
   secret: 'wit-channel-secret',   // jwt secret

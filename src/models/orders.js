@@ -20,7 +20,7 @@ Order.init({
     allowNull: false
   },
   cost: {
-    type: DataTypes.DECIMAL,
+    type: DataTypes.DECIMAL(8, 2),
     allowNull: false,
     validate: {
       min: 0

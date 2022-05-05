@@ -15,8 +15,6 @@ const DIGITALS = '0123456789'
 module.exports = {
   // 成功回调
   success(data = {}, msg = 'success', code = CODE.SUCCESS) {
-    logger.info(msg)
-
     return { code, data, msg }
   },
   // 失败回调

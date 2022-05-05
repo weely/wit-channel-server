@@ -15,13 +15,14 @@ TradeRecord.init({
   order_id: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true
   },
   client_id: {
     type: DataTypes.STRING,
     allowNull: false
   },
   cost: {
-    type: DataTypes.DECIMAL,
+    type: DataTypes.DECIMAL(8, 2),
     allowNull: false,
     validate: {
       min: 0
