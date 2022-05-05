@@ -63,25 +63,26 @@ class OrderController {
   }
 
   static async findAll(ctx) {
-    const { id, product,client, status } = ctx.query
+    const { ids, product, client, status } = ctx.query
     const where = {}
-    if (id !== undefined) {
-      const ids = id.split(',')
+    if (ids !== undefined && ids !== '') {
+      const idList = id.split(',')
       where.id = {
-        [Op.in]: ids
+        [Op.in]: idList
       }
     }
-    if (product !== undefined) {
-      where.product = {
+    if (product !== undefined && product !== '') {
+      where.product_id = product
+      // where.product = {
+      //   [Op.substring]: product
+      // }
+    }
+    if (client !== undefined && client !== '') {
+      where.client_id = {
         [Op.substring]: client
       }
     }
-    if (client !== undefined) {
-      where.client = {
-        [Op.substring]: client
-      }
-    }
-    if (status !== status) {
+    if (status !== undefined && status !== '') {
       where.status = status
     }
 

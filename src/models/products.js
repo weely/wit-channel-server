@@ -12,31 +12,32 @@ Product.init({
     autoIncrement: true,
     unique: true
   },
-  title: {
+  product_name: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true
   },
-  price: {
+  product_price: {
     type: DataTypes.DECIMAL(6, 2),
     allowNull: false,
     validate: {
       min: 0
     }
   },
-  type: {
+  product_type: {
     type: DataTypes.TINYINT,
     allowNull: false,
     defaultValue: 0
   },
-  describe: {
+  product_describe: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  // 产品状态： 默认： 1，正常可用，0：未上线，4：删除
-  status: {
+  // 产品状态： 默认： 0：待上线，1，正常可用，4：删除
+  product_status: {
     type: DataTypes.TINYINT,
     allowNull: false,
-    defaultValue: 1
+    defaultValue: 0
   }
 }, {
   // 这是其他模型参数

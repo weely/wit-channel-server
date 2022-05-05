@@ -4,6 +4,7 @@ const { success, fail, CODE } = require('../utils/utils')
 const { isFunction, isPromise, isAsyncFunction } = require('../utils/app')
 const userController = require('../controllers/UserController')
 const orderController = require('../controllers/OrderController')
+const productController = require('../controllers/ProductController')
 const tradeRecordController = require('../controllers/TradeRecordController')
 
 const router = new Router()
@@ -46,6 +47,13 @@ router.get('/', middleFunc(success('首页')))
   .put('/users/:id',          middleFunc(userController.update))
   .put('/users/resetPwd',     middleFunc(userController.resetPwd))
   .delete('/users/:id',       middleFunc(userController.delete))
+
+  // 订单
+  .post('/products',       middleFunc(productController.add))
+  .get('/products',              middleFunc(productController.findAll))
+  .get('/products/:id',          middleFunc(productController.find))
+  .put('/products/:id/trade',          middleFunc(productController.trade))
+  // .post('/products/',       middleFunc(productController.delete))
 
   // 订单
   .post('/orders',       middleFunc(orderController.add))

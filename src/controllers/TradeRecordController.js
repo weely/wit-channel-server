@@ -16,7 +16,8 @@ class TradeRecordController {
     if (!cost || cost <= 0) {
       return fail(null, "请输入有效订单金额", CODE.PARAM_ERROR)
     }
-    if (checkUnique(TradeRecord, 'order_id', order_id)){
+    const exitsOrder = await checkUnique(TradeRecord, 'order_id', order_id)
+    if (exitsOrder){
       return fail(null, "订单号不能重复", CODE.PARAM_ERROR)
     }
     const createdAt = new Date().getTime()

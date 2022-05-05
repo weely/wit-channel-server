@@ -13,6 +13,8 @@ async function checkUnique (Model, key, value) {
     }
   })
 
+  console.log('-----', obj, obj ? true : false)
+
   return obj ? true : false
 }
 
