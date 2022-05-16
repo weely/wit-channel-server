@@ -9,6 +9,7 @@ const tradeRecordController = require('../controllers/TradeRecordController')
 const wxController = require('../controllers/WxController')
 
 const router = new Router()
+router.prefix('/api')
 
 function middleFunc(cfn) {
   return async(ctx, next) => {

@@ -1,6 +1,13 @@
 const Koa = require('koa')
 const bodyParser = require('koa-bodyparser')
 const jwt = require('koa-jwt')
+
+const fs =  require('fs')
+const http = require('http')
+const https =  require('https')
+const path = require('path')
+const sslify = require('koa-sslify').default
+
 const { parseProcessArgs } = require('./utils/processUtils')
 
 const app = new Koa()
@@ -34,6 +41,18 @@ app.use(jwt({
 app.use(bodyParser())
 // 添加路由
 app.use(router.routes(), router.allowedMethods())
+app.use(sslify)
 
-app.listen(port)
-console.log(`server is running at http://127.0.0.1:${port}`)
+// 安装证书
+const options = {
+  key: fs.readFileSync(path.join(__dirname, '../ssl/7604531_weely.cc.key')),
+  cert: fs.readFileSync(path.join(__dirname, '../ssl/7604531_weely.cc.pem'))
+}
+// app.listen(port)
+http.createServer(app.callback()).listen(port, () => {
+  console.log(`server is running at http://weely.cc:${port}`)
+})
+https.createServer(options, app.callback()).listen(443, () => {
+  console.log(`server is running at https://weely.cc:443`)
+})
+
