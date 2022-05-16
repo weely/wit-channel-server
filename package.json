@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "initDb": "node ./src/initData.js",
-    "start": "nodemon ./src/app.js",
+    "dev": "nodemon ./src/app.js env=development",
+    "start": "nodemon ./src/app.js env=production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "weely.cc",

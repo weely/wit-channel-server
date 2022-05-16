@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const md5 = require('md5')
-const { secret, expiresIn } = require('../config/default')
+const { secret, expiresIn } = require('../config/config')
 const { ALPHABET, DIGITALS } = require('./utils')
 
 function generateToken(name) {

@@ -3,10 +3,6 @@ es6 模块语法： `"type": "module"`
 
 mysql:
 
-```
-lw123456
-weely@123
-```
 ## window安装遇到问题：
  遇到的问题汇总
  

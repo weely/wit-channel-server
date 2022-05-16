@@ -1,12 +1,17 @@
 const Koa = require('koa')
 const bodyParser = require('koa-bodyparser')
 const jwt = require('koa-jwt')
-const logger = require('./core/logger')
-const router = require('./routers')
-const { secret } = require('./config/default')
+const { parseProcessArgs } = require('./utils/processUtils')
 
 const app = new Koa()
 // app.keys = ['im a newer secret', 'i like turtle']
+const processConfig = parseProcessArgs(process.argv)
+app.env = processConfig.env || 'development'
+process.env.NODE_ENV = app.env
+// 由于要配置环境变量，需要注意包的引用顺序
+const { secret, port } = require('./config/config')
+const router = require('./routers')
+const logger = require('./core/logger')
 
 // 添加 jwt
 const routeingWhiteList = ['/', /^\/public/, /^\/auth\/(login|register|wxLogin)/]
@@ -30,6 +35,5 @@ app.use(bodyParser())
 // 添加路由
 app.use(router.routes(), router.allowedMethods())
 
-
-app.listen(3000)
-console.log(`server is running at http://127.0.0.1:3000`)
+app.listen(port)
+console.log(`server is running at http://127.0.0.1:${port}`)

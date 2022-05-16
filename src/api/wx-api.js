@@ -1,5 +1,5 @@
 const request = require('../utils/request')
-const { wxConfig } = require('../config/default')
+const { wxConfig } = require('../config/config')
 
 function wxLoginApi(code) {
   //  https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code

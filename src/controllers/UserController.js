@@ -1,7 +1,7 @@
 const { Op } = require("sequelize")
 const User = require('../models/users')
 const { generateToken, encryptionPwd, generateSalt } = require('../utils/auth')
-const { defaultPwd } = require('../config/default')
+const { defaultPwd } = require('../config/config')
 const { success, fail, CODE } = require('../utils/utils')
 
 const safeAttrs = ['id', 'loginname', 'username', 'account_type', 'createdAt', 'updatedAt']

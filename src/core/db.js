@@ -1,5 +1,5 @@
 const { Sequelize } = require('sequelize')
-const config = require('../config/default.js')
+const config = require('../config/config')
 
 const sequelize = new Sequelize({
   /*dialect: 选择 'mysql' | 'mariadb' | 'postgres' | 'mssql' 其一 */
