@@ -9,7 +9,7 @@ const app = new Koa()
 // app.keys = ['im a newer secret', 'i like turtle']
 
 // 添加 jwt
-const routeingWhiteList = ['/', /^\/public/, /^\/auth\/(login|register)/]
+const routeingWhiteList = ['/', /^\/public/, /^\/auth\/(login|register|wxLogin)/]
 app.use(async (ctx, next) => {
   try {
     // 添加日志工具
