@@ -3,8 +3,7 @@ node_modules/
 unpackage/
 dist/
 logs/
-src/config/default.js
-src/config/index.js
+src/config/
 
 # local env files
 .env.local
