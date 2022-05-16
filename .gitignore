@@ -4,6 +4,7 @@ unpackage/
 dist/
 logs/
 src/config/
+ssl/
 
 # local env files
 .env.local
