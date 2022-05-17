@@ -6,21 +6,21 @@ class Order extends Model {}
 Order.init({
   // 定义模型属性
   id: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(16),
     primaryKey: true,
     allowNull: false,
     unique: true
   },
   product_id: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.INTEGER.UNSIGNED,
     allowNull: false,
   },
   client_id: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(24),
     allowNull: false
   },
   cost: {
-    type: DataTypes.DECIMAL(8, 2),
+    type: DataTypes.BIGINT,
     allowNull: false,
     validate: {
       min: 0

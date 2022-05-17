@@ -6,7 +6,7 @@ class Product extends Model {}
 Product.init({
   // 定义模型属性
   id: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.INTEGER.UNSIGNED,
     primaryKey: true,
     allowNull: false,
     autoIncrement: true,
@@ -18,14 +18,14 @@ Product.init({
     unique: true
   },
   product_price: {
-    type: DataTypes.DECIMAL(6, 2),
+    type: DataTypes.BIGINT,
     allowNull: false,
     validate: {
       min: 0
     }
   },
   product_type: {
-    type: DataTypes.TINYINT,
+    type: DataTypes.TINYINT.UNSIGNED,
     allowNull: false,
     defaultValue: 0
   },
@@ -35,7 +35,7 @@ Product.init({
   },
   // 产品状态： 默认： 0：待上线，1，正常可用，4：删除
   product_status: {
-    type: DataTypes.TINYINT,
+    type: DataTypes.TINYINT.UNSIGNED,
     allowNull: false,
     defaultValue: 0
   }

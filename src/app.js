@@ -1,13 +1,6 @@
 const Koa = require('koa')
 const bodyParser = require('koa-bodyparser')
 const jwt = require('koa-jwt')
-
-const fs =  require('fs')
-const http = require('http')
-const https =  require('https')
-const path = require('path')
-const sslify = require('koa-sslify').default
-
 const { parseProcessArgs } = require('./utils/processUtils')
 
 const app = new Koa()
@@ -21,7 +14,7 @@ const router = require('./routers')
 const logger = require('./core/logger')
 
 // 添加 jwt
-const routeingWhiteList = ['/', /^\/public/, /^\/auth\/(login|register|wxLogin)/]
+const routeingWhiteList = ['/api/', /^\/api\/public/, /^\/api\/auth\/(login|register|wxLogin)/]
 app.use(async (ctx, next) => {
   try {
     // 添加日志工具
@@ -41,18 +34,29 @@ app.use(jwt({
 app.use(bodyParser())
 // 添加路由
 app.use(router.routes(), router.allowedMethods())
-app.use(sslify)
 
-// 安装证书
-const options = {
-  key: fs.readFileSync(path.join(__dirname, '../ssl/7604531_weely.cc.key')),
-  cert: fs.readFileSync(path.join(__dirname, '../ssl/7604531_weely.cc.pem'))
+if (processConfig.ssl) {  // 此ssl 仅用于本地调试用，
+  const fs =  require('fs')
+  const http = require('http')
+  const https =  require('https')
+  const path = require('path')
+  const sslify = require('koa-sslify').default
+
+  app.use(sslify)
+  // 安装证书
+  const options = {
+    key: fs.readFileSync(path.join(__dirname, '../ssl/7604531_weely.cc.key')),
+    cert: fs.readFileSync(path.join(__dirname, '../ssl/7604531_weely.cc.pem'))
+  }
+  // 开启http
+  http.createServer(app.callback()).listen(port, () => {
+    console.log(`server is running at http://weely.cc:${port}`)
+  })
+  // 开启https
+  https.createServer(options, app.callback()).listen(443, () => {
+    console.log(`server is running at https://weely.cc:443`)
+  })
+} else {
+  app.listen(port)
 }
-// app.listen(port)
-http.createServer(app.callback()).listen(port, () => {
-  console.log(`server is running at http://weely.cc:${port}`)
-})
-https.createServer(options, app.callback()).listen(443, () => {
-  console.log(`server is running at https://weely.cc:443`)
-})
 

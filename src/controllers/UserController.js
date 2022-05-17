@@ -3,8 +3,9 @@ const User = require('../models/users')
 const { generateToken, encryptionPwd, generateSalt } = require('../utils/auth')
 const { defaultPwd } = require('../config/config')
 const { success, fail, CODE } = require('../utils/utils')
+const { wxLoginApi } = require('../api/wx-api')
 
-const safeAttrs = ['id', 'loginname', 'username', 'account_type', 'createdAt', 'updatedAt']
+const safeAttrs = ['id', 'loginname', 'username', 'user_type', 'createdAt', 'updatedAt']
 const validLogin = /^[0-9a-z-#_]{2,16}$/i
 
 class UserController {
@@ -64,6 +65,52 @@ class UserController {
     })
   }
 
+  static async wxLogin(ctx){
+    const { code } = ctx.query
+    if (!code) {
+      throw new Error('参数 code 为空')
+    }
+    const res = await wxLoginApi(code)
+    const { openid, unionid, ...rest } = res.data
+    if (!openid) {
+      return fail(res.data, `微信登录失败：errmsg: ${JSON.stringify(res.data)}`, CODE.PARAM_ERROR)
+    }
+
+    try {
+      let user = await User.findOne({
+        attributes: ['id','openid','username'],
+        where: {
+          openid: openid
+        }
+      })
+      if (!user) {
+        const salt = generateSalt()
+        const encryptPwd = encryptionPwd(openid.trim(), salt)
+        user = await User.create({
+          loginname: openid,
+          username: '微信用户',
+          openid: openid,
+          unionid: unionid,
+          passsalt: salt,
+          password: encryptPwd
+        })
+      }
+  
+      return {
+        uid: user.id,
+        username: user.username,
+        openid,
+        unionid,
+        ...rest
+      }
+    } catch(err) {
+      const errmsg = typeof err === 'string' ? err : JSON.stringify(err)
+      ctx.logger.error(errmsg)
+
+      return res.data
+    }
+  }
+
   static async login(ctx) {
     const { loginname, password } = ctx.request.body
     if (!loginname) {
@@ -114,7 +161,7 @@ class UserController {
   }
 
   static async findAll(ctx) {
-    const { id, username, account_type } = ctx.query
+    const { id, username, user_type } = ctx.query
     const where = {}
     if (id !== undefined) {
       const ids = id.split(',')
@@ -127,8 +174,8 @@ class UserController {
         [Op.substring]: username
       }
     }
-    if (account_type !== undefined) {
-      where.account_type = account_type
+    if (user_type !== undefined) {
+      where.user_type = user_type
     }
 
     const data= await User.findAll({
@@ -141,9 +188,8 @@ class UserController {
 
   static async update(ctx) {
     const { id } = ctx.params
-    const { username, account_type } = ctx.request.body
+    const { username, user_type, mobile } = ctx.request.body
 
-    console.log('----', username)
     if (!id) {
       return fail(null, "参数 id 为空", CODE.PARAM_ERROR)
     }
@@ -151,8 +197,11 @@ class UserController {
     if (username !== undefined) {
       updateParams.username = username
     }
-    if (account_type !== undefined ) {
-      updateParams.account_type = account_type
+    if (user_type !== undefined ) {
+      updateParams.user_type = user_type
+    }
+    if (mobile !== undefined ) {
+      updateParams.mobile = mobile
     }
 
     await User.update(updateParams, {
@@ -190,7 +239,7 @@ class UserController {
     }
     // await User.destroy
     await User.update({
-      status: 4
+      user_status: 4
     },{
       where: {
         id

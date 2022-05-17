@@ -80,6 +80,7 @@ function parseTime(time, cFormat) {
   return time_str
 }
 
+// 生成16为长度唯一串
 function generateOrderId() {
   const prefix = `OD${parseTime(new Date(), '{y}{m}{d}').substring(2)}`
 

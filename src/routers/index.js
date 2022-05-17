@@ -6,7 +6,7 @@ const userController = require('../controllers/UserController')
 const orderController = require('../controllers/OrderController')
 const productController = require('../controllers/ProductController')
 const tradeRecordController = require('../controllers/TradeRecordController')
-const wxController = require('../controllers/WxController')
+// const wxController = require('../controllers/WxController')
 
 const router = new Router()
 router.prefix('/api')
@@ -40,7 +40,7 @@ function middleFunc(cfn) {
 // restful api
 router.get('/', middleFunc(success('首页')))
   // 微信接口
-  .get('/auth/wxLogin', middleFunc(wxController.wxLogin))
+  .get('/auth/wxLogin', middleFunc(userController.wxLogin))
 
 
   // 授权

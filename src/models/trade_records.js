@@ -6,30 +6,30 @@ class TradeRecord extends Model {}
 TradeRecord.init({
   // 定义模型属性
   id: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.INTEGER.UNSIGNED,
     primaryKey: true,
     allowNull: false,
     autoIncrement: true,
     unique: true
   },
   order_id: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(16),
     allowNull: false,
     unique: true
   },
   client_id: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(24),
     allowNull: false
   },
   cost: {
-    type: DataTypes.DECIMAL(8, 2),
+    type: DataTypes.BIGINT,
     allowNull: false,
     validate: {
       min: 0
     }
   },
   createdAt: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(20),
     allowNull: false
   }
   // amount: {
@@ -47,4 +47,3 @@ TradeRecord.init({
 });
 
 module.exports = TradeRecord
-
