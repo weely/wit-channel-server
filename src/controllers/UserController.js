@@ -95,8 +95,10 @@ class UserController {
           password: encryptPwd
         })
       }
+      const access_token = generateToken(loginname)
   
       return {
+        access_token: access_token,
         uid: user.id,
         username: user.username,
         openid,
@@ -130,8 +132,6 @@ class UserController {
     if (!user) {
       return fail(null, "登录失败，账户不存在", CODE.PARAM_ERROR)
     }
-    console.log(password, user.password, user.passsalt, encryptionPwd(password.trim(), user.passsalt))
-
     if (encryptionPwd(password.trim(), user.passsalt) !== user.password) {
 
       return fail(null, "登录失败，账户密码不匹配", CODE.PARAM_ERROR)
