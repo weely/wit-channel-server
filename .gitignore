@@ -3,8 +3,9 @@ node_modules/
 unpackage/
 dist/
 logs/
-src/config/
 ssl/
+src/config/development.js
+src/config/production.js
 
 # local env files
 .env.local
