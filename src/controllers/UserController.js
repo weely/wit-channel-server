@@ -23,50 +23,9 @@ class UserController {
     return user ? true : false
   }
 
-  static async register(ctx) {
-    const { loginname, username=loginname, password, password2 } = ctx.request.body
-
-    if (!loginname) {
-      return fail(null, "登录名不能未空", CODE.PARAM_ERROR)
-    }
-    if (!validLogin.test(loginname)) {
-      return fail(null, "登录名为字母、数字及“#-”等特殊字符组成", CODE.PARAM_ERROR)
-    }
-    if (!password) {
-      return fail(null, "密码不能为空", CODE.PARAM_ERROR)
-    }
-    if (!password2) {
-      return fail(null, "请输入确认密码", CODE.PARAM_ERROR)
-    }
-    if (password.trim() !== password2.trim()) {
-      return fail(null, "输入二次密码不一致", CODE.PARAM_ERROR)
-    }
-    const hasUser = await UserController.hasUserFunc(loginname)
-    if (hasUser) {
-      return fail(null, "用户已存在", CODE.PARAM_ERROR)
-    }
-    const salt = generateSalt()
-    const encryptPwd = encryptionPwd(password.trim(), salt)
-    const user = await User.create({
-      loginname: loginname.trim(),
-      username: username.trim(),
-      passsalt: salt,
-      password: encryptPwd
-    })
-
-    if (!user) {
-      return fail(null, "注册失败", CODE.BUSINESS_ERROR)
-    }
-
-    return success({
-      id: user.id,
-      loginname: user.loginname,
-      username: user.username
-    })
-  }
-
   static async wxLogin(ctx){
     const { code } = ctx.query
+    const { mobile='', username='微信用户' } = ctx.request.body
     if (!code) {
       throw new Error('参数 code 为空')
     }
@@ -76,41 +35,36 @@ class UserController {
       return fail(res.data, `微信登录失败：errmsg: ${JSON.stringify(res.data)}`, CODE.PARAM_ERROR)
     }
 
-    try {
-      let user = await User.findOne({
-        attributes: ['id','username', 'mobile'],
-        where: {
-          openid: openid
-        }
-      })
-      if (!user) {
-        const salt = generateSalt()
-        const encryptPwd = encryptionPwd(openid.trim(), salt)
-        user = await User.create({
-          loginname: openid,
-          username: '微信用户',
-          openid: openid,
-          unionid: unionid,
-          passsalt: salt,
-          password: encryptPwd
-        })
+    let user = await User.findOne({
+      attributes: ['id','username', 'mobile'],
+      where: {
+        openid: openid
       }
-      const access_token = generateToken(openid)
-  
-      return {
-        access_token: access_token,
-        userInfo: {
-          id: user.id,
-          username: user.username,
-          mobile: user.mobile
-        },
-        ...res.data
-      }
-    } catch(err) {
-      const errmsg = typeof err === 'string' ? err : JSON.stringify(err)
-      ctx.logger.error(errmsg)
+    })
+    if (!user) {
+      const salt = generateSalt()
+      const encryptPwd = encryptionPwd(openid.trim(), salt)
 
-      return res.data
+      user = await User.create({
+        loginname: openid,
+        username: username,
+        mobile: mobile,
+        openid: openid,
+        unionid: unionid,
+        passsalt: salt,
+        password: encryptPwd
+      })
+    }
+    const access_token = generateToken(openid)
+
+    return {
+      access_token: access_token,
+      userInfo: {
+        id: user.id,
+        username: user.username,
+        mobile: user.mobile
+      },
+      ...res.data
     }
   }
 
@@ -191,7 +145,8 @@ class UserController {
     const { id } = ctx.params
     const { username, user_type, mobile } = ctx.request.body
 
-    if (!id) {
+
+    if (!id || id === 'undefined') {
       return fail(null, "参数 id 为空", CODE.PARAM_ERROR)
     }
     const updateParams = { }
@@ -204,6 +159,9 @@ class UserController {
     if (mobile !== undefined ) {
       updateParams.mobile = mobile
     }
+
+    console.log('---------', ctx.params, ctx.request.body, updateParams)
+
 
     await User.update(updateParams, {
       where: {

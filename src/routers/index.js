@@ -40,8 +40,7 @@ function middleFunc(cfn) {
 // restful api
 router.get('/', middleFunc(success('首页')))
   // 微信接口
-  .get('/auth/wxLogin', middleFunc(userController.wxLogin))
-
+  .post('/auth/wxLogin', middleFunc(userController.wxLogin))
 
   // 授权
   .post('/auth/login',       middleFunc(userController.login))
