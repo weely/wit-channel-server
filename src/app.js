@@ -51,14 +51,15 @@ if (processConfig.ssl) {  // 此ssl 仅用于本地调试用，
   }
   // 开启http
   http.createServer(app.callback()).listen(port, () => {
-    console.log(`server is running at http://weely.cc:${port}`)
+    console.log(`server is running at http://127.0.0.1:${port}`)
   })
   // 开启https
   https.createServer(options, app.callback()).listen(443, () => {
-    console.log(`server is running at https://weely.cc:443`)
+    console.log(`server is running at https://127.0.0.1:443`)
   })
 } else {
   app.listen(port)
+  console.log(`server is running at http://127.0.0.1:${port}`)
 }
 logger.info(`\**------ Server is running At NODE_ENV:${app.env} StartTime:${parseTime(new Date().getTime())} -----**\\r\n`)
 

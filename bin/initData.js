@@ -1,3 +1,5 @@
+process.env.NODE_ENV = 'production'
+
 const User =require('../src/models/users')
 const Order =require('../src/models/orders')
 const TradeRecord =require('../src/models/trade_records')
