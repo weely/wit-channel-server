@@ -71,14 +71,14 @@ class UserController {
       throw new Error('参数 code 为空')
     }
     const res = await wxLoginApi(code)
-    const { openid, unionid, ...rest } = res.data
+    const { openid, unionid } = res.data
     if (!openid) {
       return fail(res.data, `微信登录失败：errmsg: ${JSON.stringify(res.data)}`, CODE.PARAM_ERROR)
     }
 
     try {
       let user = await User.findOne({
-        attributes: ['id','openid','username'],
+        attributes: ['id','username', 'mobile'],
         where: {
           openid: openid
         }
@@ -95,15 +95,16 @@ class UserController {
           password: encryptPwd
         })
       }
-      const access_token = generateToken(loginname)
+      const access_token = generateToken(openid)
   
       return {
         access_token: access_token,
-        uid: user.id,
-        username: user.username,
-        openid,
-        unionid,
-        ...rest
+        userInfo: {
+          id: user.id,
+          username: user.username,
+          mobile: user.mobile
+        },
+        ...res.data
       }
     } catch(err) {
       const errmsg = typeof err === 'string' ? err : JSON.stringify(err)
