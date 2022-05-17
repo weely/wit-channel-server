@@ -7,6 +7,7 @@
     "dev": "nodemon ./src/app.js env=development",
     "dev:ssl": "nodemon ./src/app.js env=development ssl=true",
     "serve:ssl": "nodemon ./src/app.js env=production ssl=true",
+    "serve": "nodemon ./src/app.js env=production",
     "start": "node ./src/app.js env=production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
