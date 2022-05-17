@@ -12,8 +12,8 @@ process.env.NODE_ENV = app.env
 const { secret, port } = require('./config/config')
 const router = require('./routers')
 const logger = require('./core/logger')
+const { parseTime } = require('./utils/app')
 
-logger.info(`\**------ Server Running At NODE_ENV:${app.env} -----**\\r\n`)
 // 添加 jwt
 const routeingWhiteList = ['/api/', /^\/api\/public/, /^\/api\/auth\/(login|register|wxLogin)/]
 app.use(async (ctx, next) => {
@@ -60,4 +60,5 @@ if (processConfig.ssl) {  // 此ssl 仅用于本地调试用，
 } else {
   app.listen(port)
 }
+logger.info(`\**------ Server is running At NODE_ENV:${app.env} StartTime:${parseTime(new Date().getTime())} -----**\\r\n`)
 
