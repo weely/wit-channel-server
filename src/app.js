@@ -13,6 +13,7 @@ const { secret, port } = require('./config/config')
 const router = require('./routers')
 const logger = require('./core/logger')
 
+logger.info(`\**------ Server Running At NODE_ENV:${app.env} -----**\\r\n`)
 // 添加 jwt
 const routeingWhiteList = ['/api/', /^\/api\/public/, /^\/api\/auth\/(login|register|wxLogin)/]
 app.use(async (ctx, next) => {
