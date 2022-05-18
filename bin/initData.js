@@ -48,14 +48,14 @@ const { generateOrderId } = require('../src/utils/app')
 // Product.sync({ force: true }).then(()=>{
 //   return Product.bulkCreate([
 //     {
-//       product_name: '车辆内外清洗',
-//       product_describe: '采用最新配方的洗车液和高分子纳米活性物的水蜡，对您爱车内外充分清洗',
-//       product_price: 28.88,
+//       title: '车辆内外清洗',
+//       resume: '采用最新配方的洗车液和高分子纳米活性物的水蜡，对您爱车内外充分清洗',
+//       min_sale_price: 28.88,
 //     },
 //     {
-//       "product_name": "内饰全面清洗",
-//       "product_describe": "采用最先进清洁剂，无损全面清洗内饰，用采用蒸汽枪进行消毒杀菌处理",
-//       "product_price": 128
+//       "title": "内饰全面清洗",
+//       "resume": "采用最先进清洁剂，无损全面清洗内饰，用采用蒸汽枪进行消毒杀菌处理",
+//       "min_sale_price": 128
 //     }
 //   ])
 // }).catch((err) => {

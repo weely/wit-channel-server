@@ -6,26 +6,26 @@ const { checkUnique } = require('../utils/ctrlUtils')
 class ProductController {
 
   static async add(ctx) {
-    const { product_name, product_price, product_describe } = ctx.request.body
+    const { title, minSalePrice, resume } = ctx.request.body
 
-    if (!product_name) {
+    if (!title) {
       return fail(null, "产品名称为空，请选择有效产品", CODE.PARAM_ERROR)
     }
-    const exitsProduct = await checkUnique(Product, 'product_name', product_name)
+    const exitsProduct = await checkUnique(Product, 'title', title)
     if (exitsProduct){
       return fail(null, "产品不能重复", CODE.PARAM_ERROR)
     }
-    if (!product_price || +product_price < 0) {
+    if (!minSalePrice || +minSalePrice < 0) {
       return fail(null, "产品价格不符合要求", CODE.PARAM_ERROR)
     }
-    if (!product_describe) {
+    if (!resume) {
       return fail(null, "产品描述为空", CODE.PARAM_ERROR)
     }
 
     const data = await Product.create({
-      product_name,
-      product_price,
-      product_describe
+      title,
+      min_sale_price: minSalePrice,
+      resume
     })
     if (!data) {
       return fail(null, "新增产品失败", CODE.BUSINESS_ERROR)
@@ -49,12 +49,12 @@ class ProductController {
   }
 
   static async findAll(ctx) {
-    const { product_name, product_status } = ctx.query
+    const { title, product_status } = ctx.query
     const where = {}
 
-    if (product_name !== undefined) {
-      where.product_name = {
-        [Op.substring]: product_name
+    if (title !== undefined) {
+      where.title = {
+        [Op.substring]: title
       }
     }
     if (product_status !== undefined && product_status !== '') {
@@ -70,23 +70,23 @@ class ProductController {
 
   static async update(ctx) {
     const { id } = ctx.params
-    const { product_name, product_price, product_describe } = ctx.request.body
+    const { title, minSalePrice, resume } = ctx.request.body
 
     if (!id) {
       return fail(null, "参数 id 为空", CODE.PARAM_ERROR)
     }
     const updateParams = { }
-    if (product_name !== undefined && product_name !== '') {
-      updateParams.product_name = product_name
+    if (title !== undefined && title !== '') {
+      updateParams.title = title
     }
-    if (product_price !== undefined) {
-      if (+product_price <= 0) {
-        return fail(null, "参数 product_price 无效", CODE.PARAM_ERROR)
+    if (minSalePrice !== undefined) {
+      if (+minSalePrice <= 0) {
+        return fail(null, "参数 minSalePrice 无效", CODE.PARAM_ERROR)
       }
-      updateParams.product_price = product_price
+      updateParams.min_sale_price = minSalePrice
     }
-    if (product_describe !== undefined && product_name !== '') {
-      updateParams.product_price = product_describe
+    if (resume !== undefined && title !== '') {
+      updateParams.min_sale_price = resume
     }
 
     await Product.update(updateParams, {

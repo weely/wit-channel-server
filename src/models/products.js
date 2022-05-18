@@ -12,26 +12,41 @@ Product.init({
     autoIncrement: true,
     unique: true
   },
-  product_name: {
+  title: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
   },
-  product_price: {
+  min_sale_price: {
     type: DataTypes.BIGINT,
     allowNull: false,
     validate: {
       min: 0
     }
   },
+  max_sale_price: {
+    type: DataTypes.BIGINT,
+    allowNull: false,
+    validate: {
+      min: 0
+    }
+  },
+  primary_image: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  resume: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  images: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   product_type: {
     type: DataTypes.TINYINT.UNSIGNED,
     allowNull: false,
     defaultValue: 0
-  },
-  product_describe: {
-    type: DataTypes.STRING,
-    allowNull: false,
   },
   // 产品状态： 默认： 0：待上线，1，正常可用，4：删除
   product_status: {
