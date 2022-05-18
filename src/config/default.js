@@ -23,7 +23,8 @@ const config = {
   },
 
   // 用户重置后默认密码
-  defaultPwd: '123456'
+  defaultPwd: '123456',
+  defaultProductIcon: 'https://weely.cc/static-assets/default_pro_icon.jpg'
 }
 
 module.exports = config

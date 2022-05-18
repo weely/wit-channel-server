@@ -17,6 +17,10 @@ Product.init({
     allowNull: false,
     unique: true
   },
+  resume: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   min_sale_price: {
     type: DataTypes.BIGINT,
     allowNull: false,
@@ -35,13 +39,11 @@ Product.init({
     type: DataTypes.STRING,
     allowNull: false,
   },
-  resume: {
-    type: DataTypes.STRING,
+  // json对象,存放产品信息 { images:[],desc:[] }
+  product_detail: {
+    type: DataTypes.TEXT,
     allowNull: false,
-  },
-  images: {
-    type: DataTypes.STRING,
-    allowNull: false,
+    default: ''
   },
   product_type: {
     type: DataTypes.TINYINT.UNSIGNED,

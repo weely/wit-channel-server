@@ -87,6 +87,36 @@ function generateOrderId() {
   return uniqid.time(prefix)
 }
 
+function isNull (val) {
+  return typeof val === 'undefined' || !val || val === '' || val === 'undefined'
+}
+
+function jsonStrify(Obj) {
+  try {
+    return JSON.stringify(Obj)
+  } catch(e) {
+    return ''
+  }
+}
+
+function firstCharToUpper(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+function kebabToCamel(str) {
+  return str.replace(/_\w/g, function (x) {
+    return x.slice(1).toUpperCase();
+  })
+}
+
+function formatKebabToCamelObj(data) {
+  return Object.keys(data).reduce((p,c) => {
+    const key = kebabToCamel(c)
+    p[key] = data[c]
+    return p
+  }, {})
+}
+
 module.exports = {
   isObject,
   isArray,
@@ -96,4 +126,8 @@ module.exports = {
   isString,
   parseTime,
   generateOrderId,
+  kebabToCamel,
+  formatKebabToCamelObj,
+  isNull,
+  jsonStrify
 }
