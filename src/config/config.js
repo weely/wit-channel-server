@@ -1,8 +1,6 @@
 const defaultConfig = require('./default')
-const devConfig = require('./development')
-const proConfig = require('./production')
 
-const envConfig = process.env.NODE_ENV === 'production' ? proConfig : devConfig
+const envConfig = process.env.NODE_ENV === 'production' ? require('./production') : require('./development')
 
 function mergeConfig(config, mergeObj) {
   for (const key in config) {
