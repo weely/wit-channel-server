@@ -35,8 +35,7 @@ const config = {
     { path: /^\/api\/public\// },
     { path: /^\/api\/wx\// },
     { path: /^\/api\/$/ },
-    // 字符串匹配
-    { path: '/api/products' },
+    { path: /^\/api\/products/ },
   ]
 }
 
