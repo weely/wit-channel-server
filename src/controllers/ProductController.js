@@ -14,7 +14,7 @@ class ProductController {
       return fail(null, "产品名称为空，请补充产品名称", CODE.PARAM_ERROR)
     }
     const { checkUnique } = require('../utils/ctrlUtils')
-    const exitsProduct = await checkUnique(Product, 'title', title)
+    const exitsProduct = await checkUnique(Product, 'title', title.trim())
     if (exitsProduct){
       return fail(null, "产品已存在，产品不能重复", CODE.PARAM_ERROR)
     }
@@ -29,11 +29,9 @@ class ProductController {
     const primary_image = primaryImage || defaultProductIcon
     const product_detail = jsonStrify(productDetail)
 
-    console.log(typeof product_detail, product_detail)
-    
     const data = await Product.create({
-      title,
-      resume,
+      title: title.trim(),
+      resume: resume.trim(),
       min_sale_price: +minSalePrice,
       max_sale_price,
       primary_image,
@@ -67,20 +65,25 @@ class ProductController {
   }
 
   static async findAll(ctx) {
-    const { title, product_status } = ctx.query
+    const { title, productType, productStatus, pageNo=1, pageSize=1000 } = ctx.query
     const where = {}
-
-    if (title !== undefined) {
+    const { isNull } = require('../utils/app')
+    if (!isNull(title)) {
       where.title = {
         [Op.substring]: title
       }
     }
-    if (product_status !== undefined && product_status !== '') {
-      where.product_status = product_status
+    if (!isNull(productType)) {
+      where.product_type = productType
     }
+    if (!isNull(productStatus)) {
+      where.product_status = productStatus
+    }
+    const pager = require('../utils/pager').pager(pageNo, pageSize)
 
     const data= await Product.findAll({
       where,
+      ...pager,
       raw: true
     })
     const { formatKebabToCamelObj } = require('../utils/app')
@@ -107,10 +110,19 @@ class ProductController {
 
     const updateParams = { }
     if (!isNull(title)) {
-      updateParams.title = title
+      const { checkUnique } = require('../utils/ctrlUtils')
+      const exitsProduct = await checkUnique(Product, 'title', title.trim(), {
+        key: 'id',
+        value: id,
+        operator: Op.ne
+      })
+      if (exitsProduct){
+        return fail(null, `产品 [${title}] 已存在`, CODE.PARAM_ERROR)
+      }
+      updateParams.title = title.trim()
     }
     if (!isNull(resume)) {
-      updateParams.resume = resume
+      updateParams.resume = resume.trim()
     }
     if (!isNull(minSalePrice)) {
       if (+minSalePrice <= 0) {
@@ -150,7 +162,7 @@ class ProductController {
     }
     // await Product.destroy
     await Product.update({
-      status: 4
+      product_status: 4
     },{
       where: {
         id

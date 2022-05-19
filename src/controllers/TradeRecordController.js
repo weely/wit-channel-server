@@ -7,13 +7,15 @@ class TradeRecordController {
 
   static async add(ctx) {
     const { order_id, client_id, cost } = ctx.request.body
-    if (!order_id) {
+    const { isNull } = require('../utils/app')
+
+    if (isNull(order_id)) {
       return fail(null, "订单 order_id 为空，请选择有效产品", CODE.PARAM_ERROR)
     }
-    if (!client_id) {
+    if (isNull(client_id)) {
       return fail(null, "client_id 为空", CODE.PARAM_ERROR)
     }
-    if (!cost || cost <= 0) {
+    if (isNull(cost) || +cost <= 0) {
       return fail(null, "请输入有效订单金额", CODE.PARAM_ERROR)
     }
     const exitsOrder = await checkUnique(TradeRecord, 'order_id', order_id)
@@ -36,26 +38,27 @@ class TradeRecordController {
   }
   
   static async findAll(ctx) {
-    const { order_ids, client_ids } = ctx.query
-    if (!order_ids) {
-      return fail(null, "参数 order_ids 为空", CODE.PARAM_ERROR)
-    }
+    const { order_ids, client_ids, pageNo=1, pageSize=1000 } = ctx.query
+    const { isNull } = require('../utils/app')
+
     const where = {}
-    if (order_ids !== undefined) {
+    if (!isNull(order_ids)) {
       const orderIds = order_ids.split(',')
       where.order_id = {
         [Op.in]: orderIds
       }
     }
-    if (client_ids !== undefined) {
+    if (!isNull(client_ids)) {
       const clientIds = client_ids.split(',')
       where.client_id = {
         [Op.substring]: clientIds
       }
     }
+    const pager = require('../utils/pager').pager(pageNo, pageSize)
 
     const data = await TradeRecord.findAll({
-      where
+      where,
+      ...pager
     })
 
     return success(data)

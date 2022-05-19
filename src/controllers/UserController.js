@@ -1,26 +1,52 @@
 const { Op } = require("sequelize")
 const User = require('../models/users')
 const { generateToken, encryptionPwd, generateSalt } = require('../utils/auth')
-const { defaultPwd } = require('../config/config')
 const { success, fail, CODE } = require('../utils/utils')
-const { wxLoginApi } = require('../api/wx-api')
-
-const safeAttrs = ['id', 'loginname', 'username', 'user_type', 'createdAt', 'updatedAt']
-const validLogin = /^[0-9a-z-#_]{2,16}$/i
+const { isNull } = require('../utils/app')
+const safeAttrs = ['id', 'loginname', 'username', 'mobile', 'openid', 'unionid','user_type', 'createdAt', 'updatedAt']
 
 class UserController {
 
-  static async hasUserFunc (loginname) {
-    if (!loginname) {
-      throw new Error('参数 loginname 为空')
+  static async register(ctx) {
+    const { loginname, username=loginname, password, password2 } = ctx.request.body
+    if (isNull(loginname)) {
+      return fail(null, "登录名不能未空", CODE.PARAM_ERROR)
     }
-    const user = await User.findOne({
-      where: {
-        loginname
-      }
-    })
+    const validLogin = /^[0-9a-z-#_]{2,16}$/i
+    if (!validLogin.test(loginname)) {
+      return fail(null, "登录名为字母、数字及“#-”等特殊字符组成", CODE.PARAM_ERROR)
+    }
+    if (isNull(password)) {
+      return fail(null, "密码不能为空", CODE.PARAM_ERROR)
+    }
+    if (isNull(password2)) {
+      return fail(null, "请输入确认密码", CODE.PARAM_ERROR)
+    }
+    if (password.trim() !== password2.trim()) {
+      return fail(null, "输入二次密码不一致", CODE.PARAM_ERROR)
+    }
+    const { checkUnique } = require('../utils/ctrlUtils')
 
-    return user ? true : false
+    const hasUser = await checkUnique(User, 'loginname', loginname)
+    if (hasUser) {
+      return fail(null, "用户已存在", CODE.PARAM_ERROR)
+    }
+    const salt = generateSalt()
+    const encryptPwd = encryptionPwd(password.trim(), salt)
+    const user = await User.create({
+      loginname: loginname.trim(),
+      username: username.trim(),
+      passsalt: salt,
+      password: encryptPwd
+    })
+    if (!user) {
+      return fail(null, "注册失败", CODE.BUSINESS_ERROR)
+    }
+    return success({
+      id: user.id,
+      loginname: user.loginname,
+      username: user.username
+    })
   }
 
   static async wxLogin(ctx){
@@ -29,9 +55,11 @@ class UserController {
     if (!code) {
       throw new Error('参数 code 为空')
     }
+    const { wxLoginApi } = require('../api/wx-api')
     const res = await wxLoginApi(code)
     const { openid, unionid } = res.data
-    if (!openid) {
+
+    if (isNull(openid)) {
       return fail(res.data, `微信登录失败：errmsg: ${JSON.stringify(res.data)}`, CODE.PARAM_ERROR)
     }
 
@@ -70,10 +98,10 @@ class UserController {
 
   static async login(ctx) {
     const { loginname, password } = ctx.request.body
-    if (!loginname) {
+    if (isNull(loginname)) {
       return fail(null, "请输入登录名", CODE.PARAM_ERROR)
     }
-    if (!password) {
+    if (isNull(password)) {
       return fail(null, "请输入密码", CODE.PARAM_ERROR)
     }
 
@@ -99,10 +127,10 @@ class UserController {
   static async find(ctx) {
     const { id } = ctx.params
 
-    if (!id) {
+    if (isNull(id)) {
       return fail(null, "参数 id 为空", CODE.PARAM_ERROR)
     }
-    const user = await User.findByPk(id)
+    const user = await User.findByPk(id, { raw: true })
     if (!user) {
       return fail(null, "用户不存在", CODE.BUSINESS_ERROR)
     }
@@ -116,25 +144,27 @@ class UserController {
   }
 
   static async findAll(ctx) {
-    const { id, username, user_type } = ctx.query
+    const { id, username, user_type, pageNo=1, pageSize=1000 } = ctx.query
     const where = {}
-    if (id !== undefined) {
+    if (!isNull(id)) {
       const ids = id.split(',')
       where.id = {
         [Op.in]: ids
       }
     }
-    if (username !== undefined) {
+    if (!isNull(username)) {
       where.username = {
         [Op.substring]: username
       }
     }
-    if (user_type !== undefined) {
+    if (!isNull(user_type)) {
       where.user_type = user_type
     }
+    const pager = require('../utils/pager').pager(pageNo, pageSize)
 
     const data= await User.findAll({
       attributes: [...safeAttrs],
+      ...pager,
       where
     })
 
@@ -145,23 +175,19 @@ class UserController {
     const { id } = ctx.params
     const { username, user_type, mobile } = ctx.request.body
 
-
-    if (!id || id === 'undefined') {
+    if (isNull(id)) {
       return fail(null, "参数 id 为空", CODE.PARAM_ERROR)
     }
     const updateParams = { }
-    if (username !== undefined) {
+    if (!isNull(username)) {
       updateParams.username = username
     }
-    if (user_type !== undefined ) {
-      updateParams.user_type = user_type
-    }
-    if (mobile !== undefined ) {
+    if (!isNull(mobile)) {
       updateParams.mobile = mobile
     }
-
-    console.log('---------', ctx.params, ctx.request.body, updateParams)
-
+    if (!isNull(user_type)) {
+      updateParams.user_type = user_type
+    }
 
     await User.update(updateParams, {
       where: {
@@ -174,9 +200,10 @@ class UserController {
 
   static async resetPwd(ctx) {
     const { id } = ctx.query
-    if (!id) {
+    if (isNull(id)) {
       return fail(null, "未找到账户", CODE.PARAM_ERROR)
     }
+    const { defaultPwd } = require('../config/config')
     const passsalt = generateSalt()
     const password = encryptionPwd(defaultPwd, passsalt)
     await User.update({
@@ -193,7 +220,7 @@ class UserController {
 
   static async delete(ctx) {
     const { id } = ctx.params
-    if (!id) {
+    if (isNull(id)) {
       return fail(null, "参数 id 为空", CODE.PARAM_ERROR)
     }
     // await User.destroy

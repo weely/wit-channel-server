@@ -13,9 +13,7 @@ const { secret, port } = require('./config/config')
 const router = require('./routers')
 const logger = require('./core/logger')
 const { parseTime } = require('./utils/app')
-
 // 添加 jwt
-const routeingWhiteList = ['/api/', /^\/api\/public/, /^\/api\/auth\/(login|register|wxLogin)/]
 app.use(async (ctx, next) => {
   try {
     // 添加日志工具
@@ -30,7 +28,7 @@ app.use(async (ctx, next) => {
 })
 app.use(jwt({
   secret: secret, cookie: 'token'
-}).unless({ path: routeingWhiteList }))
+}).unless({ custom: require('./utils/jwtUnless') }))
 // 添加 post 参数解析
 app.use(bodyParser())
 // 添加路由

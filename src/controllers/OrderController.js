@@ -63,7 +63,7 @@ class OrderController {
   }
 
   static async findAll(ctx) {
-    const { ids, product, client, status } = ctx.query
+    const { ids, product, client, status, pageNo=1, pageSize=1000 } = ctx.query
     const where = {}
     if (ids !== undefined && ids !== '') {
       const idList = id.split(',')
@@ -85,9 +85,11 @@ class OrderController {
     if (status !== undefined && status !== '') {
       where.status = status
     }
+    const pager = require('../utils/pager').pager(pageNo, pageSize)
 
     const data= await Order.findAll({
-      where
+      where,
+      ...pager
     })
 
     return success(data)

@@ -6,10 +6,13 @@ const userController = require('../controllers/UserController')
 const orderController = require('../controllers/OrderController')
 const productController = require('../controllers/ProductController')
 const tradeRecordController = require('../controllers/TradeRecordController')
+const assetController = require('../controllers/AssetController')
+const homeController = require('../controllers/HomeController')
 // const wxController = require('../controllers/WxController')
 
 const router = new Router()
-router.prefix('/api')
+const { routerPreFix } = require('../config/config')
+router.prefix(routerPreFix)
 
 function middleFunc(cfn) {
   return async(ctx, next) => {
@@ -53,22 +56,31 @@ router.get('/', middleFunc(success('首页')))
   .put('/users/resetPwd',     middleFunc(userController.resetPwd))
   .delete('/users/:id',       middleFunc(userController.delete))
 
-  // 订单
-  .post('/products',       middleFunc(productController.add))
-  .get('/products',              middleFunc(productController.findAll))
-  .get('/products/:id',          middleFunc(productController.find))
-  .put('/products/:id/trade',          middleFunc(productController.trade))
-  // .post('/products/',       middleFunc(productController.delete))
+  // 产品
+  .post('/products',          middleFunc(productController.add))
+  .get('/products',           middleFunc(productController.findAll))
+  .get('/products/:id',       middleFunc(productController.find))
+  .put('/products/:id',       middleFunc(productController.update))
+  //.delete('/products/',       middleFunc(productController.delete))
 
   // 订单
-  .post('/orders',       middleFunc(orderController.add))
-  .get('/orders',              middleFunc(orderController.findAll))
-  .get('/orders/:id',          middleFunc(orderController.find))
-  .put('/orders/:id/trade',          middleFunc(orderController.trade))
-  // .post('/orders/',       middleFunc(orderController.delete))
+  .post('/orders',            middleFunc(orderController.add))
+  .get('/orders',             middleFunc(orderController.findAll))
+  .get('/orders/:id',         middleFunc(orderController.find))
+  .put('/orders/:id/trade',   middleFunc(orderController.trade))
+  // .delete('/orders/',       middleFunc(orderController.delete))
 
   // 交易记录
-  .post('/trade_records',       middleFunc(tradeRecordController.add))
-  .get('/trade_records',              middleFunc(tradeRecordController.findAll))
+  .post('/trade_records',     middleFunc(tradeRecordController.add))
+  .get('/trade_records',      middleFunc(tradeRecordController.findAll))
+
+  // 资源管理
+  .post('/assets',            middleFunc(assetController.add))
+  .get('/assets',             middleFunc(assetController.findAll))
+  .put('/assets:id',          middleFunc(assetController.update))
+  .delete('/assets:id',       middleFunc(assetController.delete))
+
+  // 获取
+  .get('/wx/fetchHome',       middleFunc(homeController.fetchHome))
 
 module.exports = router

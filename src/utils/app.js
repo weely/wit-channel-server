@@ -128,6 +128,7 @@ module.exports = {
   generateOrderId,
   kebabToCamel,
   formatKebabToCamelObj,
+  firstCharToUpper,
   isNull,
   jsonStrify
 }

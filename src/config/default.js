@@ -1,5 +1,7 @@
 
 // 配置，所有配置需在此文件中先配置key
+const ROUTER_PREFIX = '/api'
+
 const config = {
   port: 3000,
 
@@ -16,15 +18,26 @@ const config = {
   expiresIn: 7 * 24 * 60 * 60,    // jwt 过期时间 1 周
 
   // 微信小程序配置
-  wxConfig:{
+  wxConfig: {
     wxHost: 'https://api.weixin.qq.com',
-    APPID:'',
-    AppSecret:''
+    APPID: '',
+    AppSecret: ''
   },
 
   // 用户重置后默认密码
   defaultPwd: '123456',
-  defaultProductIcon: 'https://weely.cc/static-assets/default_pro_icon.jpg'
+  defaultProductIcon: 'https://weely.cc/static-assets/default_pro_icon.jpg',
+  routerPreFix: ROUTER_PREFIX,
+  // 路由白名单，不需要校验 access_token,   method参数需要大写
+  whiteRoutes: [
+    // 正则匹配
+    { path: /^\/api\/auth\/(login|register|wxLogin)/, method: ['GET','POST'] },
+    { path: /^\/api\/public\// },
+    { path: /^\/api\/wx\// },
+    { path: /^\/api\/$/ },
+    // 字符串匹配
+    { path: '/api/products' },
+  ]
 }
 
 module.exports = config
