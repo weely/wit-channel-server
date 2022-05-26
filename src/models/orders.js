@@ -26,6 +26,14 @@ Order.init({
       min: 0
     }
   },
+  mobile: {
+    type: DataTypes.STRING(20),
+    allowNull: false
+  },
+  receiving_addr: {
+    type: DataTypes.STRING(50),
+    allowNull: false
+  },
   // amount: {
   //   type: DataTypes.INTEGER,
   //   allowNull: false,

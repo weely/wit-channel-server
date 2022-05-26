@@ -10,7 +10,9 @@ function initTable(force = false) {
     //   cost: 100,
     //   amount: 1,
     //   status: 0,
-    //   remark: '测试'
+    //   remark: '测试',
+    //   mobile: '13211112222',
+    //   receiving_addr: '测试',
     // })
   }).catch((err) => {
     console.error(err)

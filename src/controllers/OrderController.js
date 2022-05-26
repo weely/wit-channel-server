@@ -1,7 +1,7 @@
 const { Op } = require("sequelize")
 const Order = require('../models/orders')
 const { success, fail, CODE } = require('../utils/utils')
-const { generateOrderId } = require('../utils/app')
+const { generateOrderId, validateMobile } = require('../utils/app')
 
 class OrderController {
 
@@ -20,32 +20,40 @@ class OrderController {
   }
 
   static async add(ctx) {
-    const { product_id, client_id, cost, remark = '' } = ctx.request.body
+    const { productId, clientId, cost, mobile, receivingAddr, remark = '' } = ctx.request.body
 
-    if (!product_id) {
-      return fail(null, "产品 product_id 为空，请选择有效产品", CODE.PARAM_ERROR)
+    if (!productId) {
+      return fail(null, "产品 productId 为空", CODE.PARAM_ERROR)
     }
-    if (!client_id) {
-      return fail(null, "client_id 为空", CODE.PARAM_ERROR)
+    if (!clientId) {
+      return fail(null, "clientId 为空", CODE.PARAM_ERROR)
     }
     if (!cost || cost <= 0) {
-      return fail(null, "请输入有效订单金额", CODE.PARAM_ERROR)
+      return fail(null, "订单金额参数错误", CODE.PARAM_ERROR)
+    }
+    if (!validateMobile(mobile)) {
+      return fail(null, "手机号码参数错误", CODE.PARAM_ERROR)
+    }
+    if (!receivingAddr) {
+      return fail(null, "参数 receivingAddr 收货地址为空", CODE.PARAM_ERROR)
     }
     const orderId = await OrderController.createOrderId()
 
     const order = await Order.create({
       id: orderId,
-      product_id,
-      client_id,
+      product_id: productId,
+      client_id: clientId,
       cost,
       status: 0,
+      mobile,
+      receiving_addr: receivingAddr,
       remark
     })
     if (!Order) {
       return fail(null, "创建订单失败", CODE.BUSINESS_ERROR)
     }
 
-    return success(order)
+    return success({id: order.id})
   }
   
   static async find(ctx) {
@@ -54,12 +62,12 @@ class OrderController {
     if (!id) {
       return fail(null, "参数 id 为空", CODE.PARAM_ERROR)
     }
-    const Order = await Order.findByPk(id)
+    const order = await Order.findByPk(id)
     if (!Order) {
       return fail(null, "订单不存在", CODE.BUSINESS_ERROR)
     }
 
-    return success(Order)
+    return success(order)
   }
 
   static async findAll(ctx) {

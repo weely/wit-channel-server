@@ -117,6 +117,10 @@ function formatKebabToCamelObj(data) {
   }, {})
 }
 
+function validateMobile(mobile){
+  return /^((0\d{2,3}(-?)\d{7,8})|(1[356789][0-9]{9}))$/.test(mobile)
+}
+
 module.exports = {
   isObject,
   isArray,
@@ -130,5 +134,6 @@ module.exports = {
   formatKebabToCamelObj,
   firstCharToUpper,
   isNull,
-  jsonStrify
+  jsonStrify,
+  validateMobile
 }
