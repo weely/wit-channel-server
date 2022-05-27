@@ -8,7 +8,7 @@ const productController = require('../controllers/ProductController')
 const tradeRecordController = require('../controllers/TradeRecordController')
 const assetController = require('../controllers/AssetController')
 const homeController = require('../controllers/HomeController')
-// const wxController = require('../controllers/WxController')
+const wxController = require('../controllers/WxController')
 
 const router = new Router()
 const { routerPreFix } = require('../config/config')
@@ -80,7 +80,8 @@ router.get('/', middleFunc(success('首页')))
   .put('/assets:id',          middleFunc(assetController.update))
   .delete('/assets:id',       middleFunc(assetController.delete))
 
-  // 获取
+  // wx 小程序接口
   .get('/wx/fetchHome',       middleFunc(homeController.fetchHome))
+  .get('/wx/pay',            middleFunc(wxController.toPay))
 
 module.exports = router

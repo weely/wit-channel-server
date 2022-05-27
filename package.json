@@ -27,7 +27,8 @@
     "mysql2": "^2.3.3",
     "sequelize": "^6.19.0",
     "uniqid": "^5.4.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "nodemon": "^2.0.16"

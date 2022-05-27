@@ -1,6 +1,6 @@
 const { Op } = require("sequelize")
 const User = require('../models/users')
-const { generateToken, encryptionPwd, generateSalt } = require('../utils/auth')
+const { generateToken, encryptionPwd, generateRandomStr } = require('../utils/auth')
 const { success, fail, CODE } = require('../utils/utils')
 const { isNull } = require('../utils/app')
 const safeAttrs = ['id', 'loginname', 'username', 'mobile', 'openid', 'unionid','user_type', 'createdAt', 'updatedAt']
@@ -31,7 +31,7 @@ class UserController {
     if (hasUser) {
       return fail(null, "用户已存在", CODE.PARAM_ERROR)
     }
-    const salt = generateSalt()
+    const salt = generateRandomStr()
     const encryptPwd = encryptionPwd(password.trim(), salt)
     const user = await User.create({
       loginname: loginname.trim(),
@@ -70,7 +70,7 @@ class UserController {
       }
     })
     if (!user) {
-      const salt = generateSalt()
+      const salt = generateRandomStr()
       const encryptPwd = encryptionPwd(openid.trim(), salt)
 
       user = await User.create({
@@ -204,7 +204,7 @@ class UserController {
       return fail(null, "未找到账户", CODE.PARAM_ERROR)
     }
     const { defaultPwd } = require('../config/config')
-    const passsalt = generateSalt()
+    const passsalt = generateRandomStr()
     const password = encryptionPwd(defaultPwd, passsalt)
     await User.update({
       passsalt,

@@ -14,7 +14,6 @@ module.exports = function customJwtUnless(ctx) {
       const matchPath = typeof allowPaths === 'string' ? allowPaths === path : allowPaths.test(path)
 
       if (matchPath) {
-        console.log(router, allowMethods, typeof allowMethods === 'string')
         // 没有method参数时，默认get方法
         let matchMethod = false
         if (allowMethods) {
