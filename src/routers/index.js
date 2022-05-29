@@ -67,7 +67,7 @@ router.get('/', middleFunc(success('首页')))
   .post('/orders',            middleFunc(orderController.add))
   .get('/orders',             middleFunc(orderController.findAll))
   .get('/orders/:id',         middleFunc(orderController.find))
-  .put('/orders/:id/trade',   middleFunc(orderController.trade))
+  .put('/orders/:id/confirm', middleFunc(orderController.confirm))
   // .delete('/orders/',       middleFunc(orderController.delete))
 
   // 交易记录

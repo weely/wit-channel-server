@@ -45,6 +45,7 @@ class OrderController {
       client_id: clientId,
       cost,
       status: 0,
+      pay_status: 0,
       mobile,
       receiving_addr: receivingAddr,
       remark
@@ -62,7 +63,7 @@ class OrderController {
     if (!id) {
       return fail(null, "参数 id 为空", CODE.PARAM_ERROR)
     }
-    const order = await Order.findByPk(id)
+    const order = await Order.findByPk(id, { raw: true })
     if (!Order) {
       return fail(null, "订单不存在", CODE.BUSINESS_ERROR)
     }
@@ -97,22 +98,28 @@ class OrderController {
 
     const data= await Order.findAll({
       where,
-      ...pager
+      ...pager,
+      raw: true
     })
 
     return success(data)
   }
 
-  static async trade (ctx) {
+  /**
+   * 师傅接收或取消订单
+   * @param {*} ctx 
+   * @returns 
+   */
+  static async confirm (ctx) {
     const { id } = ctx.params
     const { status } = ctx.request.body
-    const allowStatus = [0,1,2,3,4]
+    const allowStatus = [0,1,2]
 
     if (!id) {
       return fail(null, "参数 id 为空", CODE.PARAM_ERROR)
     }
     if (!allowStatus.includes(+status)) {
-      return fail(null, "订单交易失败", CODE.PARAM_ERROR)
+      return fail(null, `参数错误：status is invalid`, CODE.PARAM_ERROR)
     }
     const updateParams = { }
     if (status !== undefined) {

@@ -28,6 +28,7 @@
     "sequelize": "^6.19.0",
     "uniqid": "^5.4.0",
     "uuid": "^8.3.2",
+    "ws": "^8.7.0",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {

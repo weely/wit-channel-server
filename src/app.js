@@ -61,3 +61,5 @@ if (processConfig.ssl) {  // 此ssl 仅用于本地调试用，
 }
 logger.info(`\**------ Server is running At NODE_ENV:${app.env} StartTime:${parseTime(new Date().getTime())} -----**\\r\n`)
 
+// 开启websocket 推送
+require('./ws/wss')

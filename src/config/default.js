@@ -4,6 +4,7 @@ const ROUTER_PREFIX = '/api'
 
 const config = {
   port: 3000,
+  wssPort: 3008,
 
   // database 配置
   db: {

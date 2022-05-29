@@ -41,8 +41,14 @@ Order.init({
   //     min: 0
   //   }
   // },
-  // 订单状态： 0: 待支付，1。已支付，2。已成交、3.已取消，4.已退单
+  // 订单状态： 0: 待确认，1: 已接单，2: 已取消
   status: {
+    type: DataTypes.TINYINT,
+    allowNull: false,
+    defaultValue: 0
+  },
+  // 订单状态： 0: 待支付，2: 已支付，3: 已取消
+  pay_status: {
     type: DataTypes.TINYINT,
     allowNull: false,
     defaultValue: 0
